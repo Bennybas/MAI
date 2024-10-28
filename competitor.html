@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competitor Drug Analysis</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title {
+            color: #2d3748;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .tier-info {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .tier-item {
+            text-align: center;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            background: #f7fafc;
+        }
+
+        .competitor-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .company-drug-info {
+            flex: 1;
+        }
+
+        .competitor-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .drug-name {
+            color: #4a5568;
+            font-size: 1rem;
+            margin-top: 0.25rem;
+        }
+
+        .view-details-btn {
+            padding: 0.5rem 1rem;
+            background: #4299e1;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .view-details-btn:hover {
+            background: #3182ce;
+        }
+
+        .expanded-content {
+            display: none;
+            margin-top: 1.5rem;
+        }
+
+        .expanded-content.active {
+            display: block;
+        }
+
+        .coverage-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+        }
+
+        .coverage-table th, 
+        .coverage-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border: 1px solid #e2e8f0;
+        }
+
+        .coverage-table th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .coverage-table tr:nth-child(even) {
+            background: #f7fafc;
+        }
+
+        .barriers-section {
+            margin-top: 1.5rem;
+        }
+
+        .barriers-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+
+        .barriers-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .barrier-card {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #4299e1;
+        }
+
+        .barrier-type {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .barrier-description {
+            font-size: 0.875rem;
+            color: #4a5568;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 999px;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status-approved {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .status-pending {
+            background: #feebc8;
+            color: #744210;
+        }
+
+        .status-restricted {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+        .payer-btn {
+            background: none;
+            border: none;
+            color: #4299e1;
+            cursor: pointer;
+            padding: 0;
+            text-decoration: underline;
+            font-weight: 500;
+        }
+
+        .payer-btn:hover {
+            color: #3182ce;
+        }
+
+        .expanded-payer-row {
+            display: none;
+            background: #f8fafc;
+            padding: 1rem;
+        }
+
+        .expanded-payer-row.active {
+            display: table-row;
+        }
+
+        .expanded-payer-content {
+            padding: 1rem;
+        }
+
+        .payer-insights-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .insight-card {
+            background: white;
+            padding: 1rem;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .insight-title {
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-value {
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header-section">
+            <h1 class="header-title">Competitor Drug Analysis</h1>
+        </div>
+
+        <!-- Competitor Card 1 -->
+        <div class="competitor-card">
+            <div class="card-header">
+                <div class="company-drug-info">
+                    <div class="competitor-name">Roche Pharmaceuticals</div>
+                    <div class="drug-name">Tecentriq (atezolizumab)</div>
+                    <strong>Standard Tiers</strong> Tier-1,Tier-2
+                    </div>
+                <button class="view-details-btn" onclick="toggleDetails(this)">View Details</button>
+            </div>
+            <div class="expanded-content">
+                <table class="coverage-table">
+                    <thead>
+                        <tr>
+                            <th>Plan Type</th>
+                            <th>Major Payers</th>
+                            <th>AVG POP (%)</th>
+                            <th>AVG Reimbursement</th>
+                            <th>Tier Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>HMO</td>
+                            <td>
+                                <button class="payer-btn" onclick="togglePayerDetails(this, 'uhc-hmo')">United Healthcare</button>
+                            </td>
+                            <td>18%</td>
+                            <td>82%</td>
+                            <td><span class="status-badge status-approved">Tier 1</span></td>
+                        </tr>
+                        <tr id="uhc-hmo" class="expanded-payer-row">
+                            <td colspan="5">
+                                <div class="expanded-payer-content">
+                                    <div class="payer-insights-grid">
+                                        <div class="insight-card">
+                                            <div class="insight-title">Price & Reimbursement</div>
+                                            <div class="insight-value">
+                                                <p>POP : 15%</p>
+                                                <p>Reimbursement Rate: 82%</p>
+                                                <p>Net Price: $984</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Plan Details</div>
+                                            <div class="insight-value">
+                                                <p>Monthly Premium: $450</p>
+                                                <p>Annual Deductible: $2,500</p>
+                                                <p>Max Out-of-Pocket: $8,000</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Access Requirements</div>
+                                            <div class="insight-value">
+                                                <p>✓ Prior Authorization</p>
+                                                <p>✓ Step Therapy</p>
+                                                <p>✗ Limited Distribution</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PPO</td>
+                            <td>
+                                <button class="payer-btn" onclick="togglePayerDetails(this, 'anthem-ppo')">Anthem BCBS</button><br>
+                                <button class="payer-btn" onclick="togglePayerDetails(this, 'uhc-ppo')">United Healthcare</button>
+                            </td>
+                            <td>20%</td>
+                            <td>80%</td>
+                            <td><span class="status-badge status-approved">Tier 1</span></td>
+                        </tr>
+                        <tr id="anthem-ppo" class="expanded-payer-row">
+                            <td colspan="5">
+                                <div class="expanded-payer-content">
+                                    <div class="payer-insights-grid">
+                                        <div class="insight-card">
+                                            <div class="insight-title">Price & Reimbursement</div>
+                                            <div class="insight-value">
+                                                <p>POP : 18%</p>
+                                                <p>Reimbursement Rate: 80%</p>
+                                                <p>Net Price: $1,200</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Plan Details</div>
+                                            <div class="insight-value">
+                                                <p>Monthly Premium: $500</p>
+                                                <p>Annual Deductible: $2,000</p>
+                                                <p>Max Out-of-Pocket: $7,500</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Access Requirements</div>
+                                            <div class="insight-value">
+                                                <p>✓ Prior Authorization</p>
+                                                <p>✓ Step Therapy</p>
+                                                <p>✗ Limited Distribution</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="uhc-ppo" class="expanded-payer-row">
+                            <td colspan="5">
+                                <div class="expanded-payer-content">
+                                    <div class="payer-insights-grid">
+                                        <div class="insight-card">
+                                            <div class="insight-title">Price & Reimbursement</div>
+                                            <div class="insight-value">
+                                                <p>POP : 15%</p>
+                                                <p>Reimbursement Rate: 80%</p>
+                                                <p>Net Price: $1,040</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Plan Details</div>
+                                            <div class="insight-value">
+                                                <p>Monthly Premium: $520</p>
+                                                <p>Annual Deductible: $2,400</p>
+                                                <p>Max Out-of-Pocket: $7,800</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Access Requirements</div>
+                                            <div class="insight-value">
+                                                <p>✓ Prior Authorization</p>
+                                                <p>✓ Step Therapy</p>
+                                                <p>✗ Limited Distribution</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>EPO</td>
+                            <td>
+                                <button class="payer-btn" onclick="togglePayerDetails(this, 'aetna-epo')">Aetna</button>
+                            </td>
+                            <td>25%</td>
+                            <td>75%</td>
+                            <td><span class="status-badge status-pending">Tier 2</span></td>
+                        </tr>
+                        <tr id="aetna-epo" class="expanded-payer-row">
+                            <td colspan="5">
+                                <div class="expanded-payer-content">
+                                    <div class="payer-insights-grid">
+                                        <div class="insight-card">
+                                            <div class="insight-title">Price & Reimbursement</div>
+                                            <div class="insight-value">
+                                                <p>POP : 25%</p>
+                                                <p>Reimbursement Rate: 75%</p>
+                                                <p>Net Price: $1,050</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Plan Details</div>
+                                            <div class="insight-value">
+                                                <p>Monthly Premium: $480</p>
+                                                <p>Annual Deductible: $2,200</p>
+                                                <p>Max Out-of-Pocket: $7,600</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Access Requirements</div>
+                                            <div class="insight-value">
+                                                <p>✓ Prior Authorization</p>
+                                                <p>✓ Step Therapy</p>
+                                                <p>✗ Limited Distribution</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+
+                <div class="barriers-section">
+                    <h3 class="barriers-title">Patient Access Barriers</h3>
+                    <div class="barriers-grid">
+                        <div class="barrier-card">
+                            <div class="barrier-type">Prior Authorization</div>
+                            <div class="barrier-description">Required for all new prescriptions. Must demonstrate failure of two preferred alternatives.</div>
+                        </div>
+                        <div class="barrier-card">
+                            <div class="barrier-type">Step Therapy</div>
+                            <div class="barrier-description">Must try and fail on two preferred products before coverage approval.</div>
+                        </div>
+                        <div class="barrier-card">
+                            <div class="barrier-type">Quantity Limits</div>
+                            <div class="barrier-description">Limited to 30-day supply; maximum of 90-day supply per prescription.</div>
+                        </div>
+                        <div class="barrier-card">
+                            <div class="barrier-type">Specialist Restriction</div>
+                            <div class="barrier-description">Must be prescribed by or in consultation with an oncologist.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Competitor Card 2 -->
+        <div class="competitor-card">
+            <div class="card-header">
+                <div class="company-drug-info">
+                    <div class="competitor-name">Merck & Co</div>
+                    <div class="drug-name">Keytruda (pembrolizumab)</div>
+                    <strong>Standard Tiers</strong> Tier-1,Tier-3
+                </div>
+                <button class="view-details-btn" onclick="toggleDetails(this)">View Details</button>
+            </div>
+            <div class="expanded-content">
+                <table class="coverage-table">
+                    <thead>
+                        <tr>
+                            <th>Plan Type</th>
+                            <th>Major Payers</th>
+                            <th>POP (%)</th>
+                            <th>Reimbursement</th>
+                            <th>Tier Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>HMO</td>
+                            <td>
+                                <button class="payer-btn" onclick="togglePayerDetails(this, 'cigna-hmo')">Cigna</button><br>
+                                <button class="payer-btn" onclick="togglePayerDetails(this, 'uhc-hmo')">United Healthcare</button>
+                            </td>
+                            <td>15%</td>
+                            <td>85%</td>
+                            <td><span class="status-badge status-approved">Tier 1</span></td>
+                        </tr>
+                        <tr id="cigna-hmo" class="expanded-payer-row">
+                            <td colspan="5">
+                                <div class="expanded-payer-content">
+                                    <div class="payer-insights-grid">
+                                        <div class="insight-card">
+                                            <div class="insight-title">Price & Reimbursement</div>
+                                            <div class="insight-value">
+                                                <p>POP : 15%</p>
+                                                <p>Reimbursement Rate: 85%</p>
+                                                <p>Net Price: $935</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Plan Details</div>
+                                            <div class="insight-value">
+                                                <p>Monthly Premium: $460</p>
+                                                <p>Annual Deductible: $2,600</p>
+                                                <p>Max Out-of-Pocket: $7,500</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Access Requirements</div>
+                                            <div class="insight-value">
+                                                <p>✓ Prior Authorization</p>
+                                                <p>✓ Step Therapy</p>
+                                                <p>✗ Limited Distribution</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr id="uhc-hmo" class="expanded-payer-row">
+                            <td colspan="5">
+                                <div class="expanded-payer-content">
+                                    <div class="payer-insights-grid">
+                                        <div class="insight-card">
+                                            <div class="insight-title">Price & Reimbursement</div>
+                                            <div class="insight-value">
+                                                <p>POP : 10%</p>
+                                                <p>Reimbursement Rate: 85%</p>
+                                                <p>Net Price: $1,020</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Plan Details</div>
+                                            <div class="insight-value">
+                                                <p>Monthly Premium: $450</p>
+                                                <p>Annual Deductible: $2,500</p>
+                                                <p>Max Out-of-Pocket: $8,000</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Access Requirements</div>
+                                            <div class="insight-value">
+                                                <p>✓ Prior Authorization</p>
+                                                <p>✓ Step Therapy</p>
+                                                <p>✗ Limited Distribution</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>PPO</td>
+                            <td>
+                                <button class="payer-btn" onclick="togglePayerDetails(this, 'bcbs-ppo')">Blue Cross</button>
+                            </td>
+                            <td>22%</td>
+                            <td>78%</td>
+                            <td><span class="status-badge status-restricted">Tier 3</span></td>
+                        </tr>
+                        <tr id="bcbs-ppo" class="expanded-payer-row">
+                            <td colspan="5">
+                                <div class="expanded-payer-content">
+                                    <div class="payer-insights-grid">
+                                        <div class="insight-card">
+                                            <div class="insight-title">Price & Reimbursement</div>
+                                            <div class="insight-value">
+                                                <p>POP : 15%</p>
+                                                <p>Reimbursement Rate: 78%</p>
+                                                <p>Net Price: $1,092</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Plan Details</div>
+                                            <div class="insight-value">
+                                                <p>Monthly Premium: $470</p>
+                                                <p>Annual Deductible: $2,300</p>
+                                                <p>Max Out-of-Pocket: $7,700</p>
+                                            </div>
+                                        </div>
+                                        <div class="insight-card">
+                                            <div class="insight-title">Access Requirements</div>
+                                            <div class="insight-value">
+                                                <p>✓ Prior Authorization</p>
+                                                <p>✓ Step Therapy</p>
+                                                <p>✗ Limited Distribution</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+
+                <div class="barriers-section">
+                    <h3 class="barriers-title">Patient Access Barriers</h3>
+                    <div class="barriers-grid">
+                        <div class="barrier-card">
+                            <div class="barrier-type">Clinical Prerequisites</div>
+                            <div class="barrier-description">Documentation of specific biomarker testing required.</div>
+                        </div>
+                        <div class="barrier-card">
+                            <div class="barrier-type">Coverage Limitations</div>
+                            <div class="barrier-description">Limited to FDA-approved indications only; off-label use not covered.</div>
+                        </div>
+                        <div class="barrier-card">
+                            <div class="barrier-type">Financial Requirements</div>
+                            <div class="barrier-description">High specialty tier copay; prior authorization required for copay assistance.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleDetails(button) {
+            const card = button.closest('.competitor-card');
+            const expandedContent = card.querySelector('.expanded-content');
+            const isExpanded = expandedContent.classList.contains('active');
+            
+            expandedContent.classList.toggle('active');
+            button.textContent = isExpanded ? 'View Details' : 'Hide Details';
+        }
+        function togglePayerDetails(button, rowId) {
+            const expandedRow = document.getElementById(rowId);
+            const isExpanded = expandedRow.classList.contains('active');
+            
+            // Close all expanded rows first
+            document.querySelectorAll('.expanded-payer-row').forEach(row => {
+                row.classList.remove('active');
+            });
+            
+            // Toggle the clicked row
+            if (!isExpanded) {
+                expandedRow.classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>
