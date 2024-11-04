@@ -149,16 +149,12 @@
             <h1>Market Access Intelligence - Breast Cancer</h1>
             <div class="quick-summary">
                 <div class="summary-card">
-                    <h3>Tier level</h3>
-                    <div class="value">Tier-1,2,3</div>
+                    <h3>Tier levels</h3>
+                    <div class="value">1,2,3</div>
                 </div>
                 <div class="summary-card">
                     <h3>Average Reimbursement Rate</h3>
                     <div class="value">78.5%</div>
-                </div>
-                <div class="summary-card">
-                    <h3>Median Price per Dose</h3>
-                    <div class="value">$1,250</div>
                 </div>
                 <div class="summary-card">
                     <h3>Patient Access</h3>
@@ -254,80 +250,94 @@
 
         // Stacked Bar Chart for Competitors and Their Drugs
         const planCtx = document.getElementById('planTypeChart');
-        new Chart(planCtx, {
-            type: 'bar',
-            data: {
-                labels: ['HMO', 'PPO', 'EPO', 'POS', 'CDHP'],
-                datasets: [
-                    {
-                        label: 'Roche (Herceptin)',
-                        data: [8, 12, 7, 5, 10],
-                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
-                        hoverBackgroundColor: 'rgba(59, 130, 246, 1)'
+
+const data = {
+    labels: ['HMO', 'PPO', 'EPO', 'POS', 'CDHP'], // Plan Types
+    datasets: [
+        {
+            label: 'Roche (Herceptin)',
+            data: [1, 2, 2, 1, 1], // Actual tier levels for Herceptin in each plan type
+            backgroundColor: 'rgba(59, 130, 246, 0.8)',
+            borderColor: 'rgba(59, 130, 246, 1)',
+            borderWidth: 1,
+        },
+        {
+            label: 'Genentech (Perjeta)',
+            data: [3, 2, 2, 1, 2], // Actual tier levels for Perjeta in each plan type
+            backgroundColor: 'rgba(34, 197, 94, 0.8)',
+            borderColor: 'rgba(34, 197, 94, 1)',
+            borderWidth: 1,
+        },
+        {
+            label: 'AstraZeneca (Kadcyla)',
+            data: [2, 1, 1, 0, 0], // Actual tier levels for Kadcyla in each plan type
+            backgroundColor: 'rgba(168, 85, 247, 0.8)',
+            borderColor: 'rgba(168, 85, 247, 1)',
+            borderWidth: 1,
+        },
+        // Add more competitors as needed with their respective tier level data
+    ]
+};
+
+new Chart(planCtx, {
+    type: 'bar',
+    data: data,
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    padding: 15,
+                    font: {
+                        family: "'Segoe UI', system-ui, -apple-system, sans-serif",
+                        size: 12,
                     },
-                    {
-                        label: 'Roche (Perjeta)',
-                        data: [6, 10, 8, 4, 8],
-                        backgroundColor: 'rgba(34, 197, 94, 0.8)',
-                        hoverBackgroundColor: 'rgba(34, 197, 94, 1)'
-                    },
-                    {
-                        label: 'Roche (Kadcyla)',
-                        data: [6, 13, 10, 6, 12],
-                        backgroundColor: 'rgba(168, 85, 247, 0.8)',
-                        hoverBackgroundColor: 'rgba(168, 85, 247, 1)'
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            padding: 15,
-                            font: {
-                                family: "'Segoe UI', system-ui, -apple-system, sans-serif",
-                                size: 12
-                            }
-                        }
-                    },
-                    tooltip: {
-                        callbacks: {
-                            title: function(context) {
-                                return `${context[0].label} Plan Type`;
-                            },
-                            label: function(context) {
-                                return `${context.dataset.label}: ${context.raw} drugs`;
-                            }
-                        }
-                    }
                 },
-                scales: {
-                    x: {
-                        stacked: true,
-                        grid: {
-                            display: false
-                        }
+            },
+            tooltip: {
+                callbacks: {
+                    title: function (context) {
+                        return `${context[0].label} Plan Type`;
                     },
-                    y: {
-                        stacked: true,
-                        title: {
-                            display: true,
-                            text: 'Number of Drugs',
-                            font: {
-                                size: 12,
-                                weight: 500
-                            }
-                        },
-                        grid: {
-                            color: 'rgba(0,0,0,0.05)'
-                        }
-                    }
-                }
-            }
-        });
+                    label: function (context) {
+                        return `${context.dataset.label}: Level ${context.raw}`; // Changed from "Tier(s)" to "Level"
+                    },
+                },
+            },
+        },
+        scales: {
+            x: {
+                stacked: false, // Disable stacking for grouped bars
+                grid: {
+                    display: true,
+                },
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Tier Levels', // Updated title to indicate level
+                    font: {
+                        size: 12,
+                        weight: 500,
+                    },
+                },
+                grid: {
+                    color: 'rgba(0,0,0,0.05)',
+                },
+                ticks: {
+                    beginAtZero: true, // Start y-axis at zero
+                    stepSize: 1, // Set step size to 1 to show only integer values
+                    suggestedMin: 0, // Minimum value of y-axis
+                    suggestedMax: 5, // Maximum value of y-axis
+                },
+            },
+        },
+    },
+});
+
+
     </script>
 </body>
 </html>
