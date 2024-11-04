@@ -258,6 +258,95 @@
             margin-bottom: 0.5rem;
             color: #4a5568;
         }
+        .filter-buttons {
+        margin-top: 1rem;
+        display: flex;
+        gap: 1.5rem;
+        }
+
+        .tier-filters, .dosage-filters {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            background: white;
+            color: #4a5568;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn.active {
+            background: #4299e1;
+            color: white;
+            border-color: #4299e1;
+        }
+
+        .hidden-row {
+            display: none;
+        }
+        .states-container {
+            max-width: 1200px;
+            margin: 0 auto 2rem auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .states-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .state-button {
+            padding: 1.5rem;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .state-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #3182ce, #2c5282);
+        }
+
+        .state-button.active {
+            background: linear-gradient(135deg, #2c5282, #1a365d);
+            transform: translateY(1px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .states-title {
+            font-size: 1.8rem;
+            color: #2d3748;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .drug-analysis-content {
+            display: none;
+            margin-top: 2rem;
+        }
+
+        .drug-analysis-content.active {
+            display: block;
+        }
+
     </style>
 </head>
 <body>
@@ -265,15 +354,41 @@
         <div class="header-section">
             <h1 class="header-title">Competitor Drug Analysis</h1>
         </div>
-
+        <div class="states-container">
+            <h2 class="states-title">Select State for Drug Analysis</h2>
+            <div class="states-grid">
+                <button class="state-button" onclick="showAnalysis(this)">California</button>
+                <button class="state-button" onclick="showAnalysis(this)">Texas</button>
+                <button class="state-button" onclick="showAnalysis(this)">Florida</button>
+                <button class="state-button" onclick="showAnalysis(this)">New York</button>
+                <button class="state-button" onclick="showAnalysis(this)">Illinois</button>
+                <button class="state-button" onclick="showAnalysis(this)">Pennsylvania</button>
+                <button class="state-button" onclick="showAnalysis(this)">Ohio</button>
+                <button class="state-button" onclick="showAnalysis(this)">Georgia</button>
+                <button class="state-button" onclick="showAnalysis(this)">Michigan</button>
+                <button class="state-button" onclick="showAnalysis(this)">North Carolina</button>
+            </div>
+        </div>
+        <div id="drugAnalysisContent" class="drug-analysis-content">
         <!-- Competitor Card 1 -->
         <div class="competitor-card">
             <div class="card-header">
                 <div class="company-drug-info">
                     <div class="competitor-name">Roche Pharmaceuticals</div>
                     <div class="drug-name">Tecentriq (atezolizumab)</div>
-                    <strong>Standard Tiers</strong> Tier-1,Tier-2
+                    <div class="filter-buttons">
+                        <div class="tier-filters">
+                            <strong>Tiers: </strong>
+                            <button class="filter-btn" data-tier="1" onclick="filterByTier(this, 1)">Tier 1</button>
+                            <button class="filter-btn" data-tier="2" onclick="filterByTier(this, 2)">Tier 2</button>
+                        </div>
+                        <div class="dosage-filters">
+                            <strong>Dosage: </strong>
+                            <button class="filter-btn" data-dosage="840mg" onclick="filterByDosage(this, '840mg')">840mg</button>
+                            <button class="filter-btn" data-dosage="1200mg" onclick="filterByDosage(this, '1200mg')">1200mg</button>
+                        </div>
                     </div>
+                </div>
                 <button class="view-details-btn" onclick="toggleDetails(this)">View Details</button>
             </div>
             <div class="expanded-content">
@@ -281,18 +396,21 @@
                     <thead>
                         <tr>
                             <th>Plan Type</th>
-                            <th>Major Payers</th>
+                            <th>Payers</th>
+                            <th>Dosage</th>
                             <th>AVG POP (%)</th>
-                            <th>AVG Reimbursement</th>
+                            <th>AVG Reimbursement (%)</th>
                             <th>Tier Status</th>
+                            
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
+                        <tr data-tier="1" data-dosage="840mg">
                             <td>HMO</td>
                             <td>
                                 <button class="payer-btn" onclick="togglePayerDetails(this, 'uhc-hmo')">United Healthcare</button>
                             </td>
+                            <td>840mg</td>
                             <td>18%</td>
                             <td>82%</td>
                             <td><span class="status-badge status-approved">Tier 1</span></td>
@@ -335,6 +453,7 @@
                                 <button class="payer-btn" onclick="togglePayerDetails(this, 'anthem-ppo')">Anthem BCBS</button><br>
                                 <button class="payer-btn" onclick="togglePayerDetails(this, 'uhc-ppo')">United Healthcare</button>
                             </td>
+                            <td>840mg</td>
                             <td>20%</td>
                             <td>80%</td>
                             <td><span class="status-badge status-approved">Tier 1</span></td>
@@ -395,7 +514,7 @@
                                             <div class="insight-title">Access Requirements</div>
                                             <div class="insight-value">
                                                 <p>✓ Prior Authorization</p>
-                                                <p>✓ Step Therapy</p>
+                                                <p>✗ Step Therapy</p>
                                                 <p>✗ Limited Distribution</p>
                                             </div>
                                         </div>
@@ -408,6 +527,7 @@
                             <td>
                                 <button class="payer-btn" onclick="togglePayerDetails(this, 'aetna-epo')">Aetna</button>
                             </td>
+                            <td>700mg</td>
                             <td>25%</td>
                             <td>75%</td>
                             <td><span class="status-badge status-pending">Tier 2</span></td>
@@ -437,7 +557,7 @@
                                             <div class="insight-value">
                                                 <p>✓ Prior Authorization</p>
                                                 <p>✓ Step Therapy</p>
-                                                <p>✗ Limited Distribution</p>
+                                                <p>✓ Limited Distribution</p>
                                             </div>
                                         </div>
                                     </div>
@@ -452,19 +572,20 @@
                     <h3 class="barriers-title">Patient Access Barriers</h3>
                     <div class="barriers-grid">
                         <div class="barrier-card">
-                            <div class="barrier-type">Prior Authorization</div>
-                            <div class="barrier-description">Required for all new prescriptions. Must demonstrate failure of two preferred alternatives.</div>
+                            <div class="barrier-type">
+                                <strong> Prior Authorization</strong></div>
+                            <div class="barrier-description">Prior Authorization must be required</div>
                         </div>
                         <div class="barrier-card">
-                            <div class="barrier-type">Step Therapy</div>
+                            <div class="barrier-type"><strong>Step Therapy</strong></div>
                             <div class="barrier-description">Must try and fail on two preferred products before coverage approval.</div>
                         </div>
                         <div class="barrier-card">
-                            <div class="barrier-type">Quantity Limits</div>
+                            <div class="barrier-type"><strong>Quantity Limits</strong></div>
                             <div class="barrier-description">Limited to 30-day supply; maximum of 90-day supply per prescription.</div>
                         </div>
                         <div class="barrier-card">
-                            <div class="barrier-type">Specialist Restriction</div>
+                            <div class="barrier-type"><strong>Specialist Restriction</strong></div>
                             <div class="barrier-description">Must be prescribed by or in consultation with an oncologist.</div>
                         </div>
                     </div>
@@ -487,9 +608,9 @@
                     <thead>
                         <tr>
                             <th>Plan Type</th>
-                            <th>Major Payers</th>
-                            <th>POP (%)</th>
-                            <th>Reimbursement</th>
+                            <th>Payers</th>
+                            <th>AVG POP (%)</th>
+                            <th>AVG Reimbursement (%)</th>
                             <th>Tier Status</th>
                         </tr>
                     </thead>
@@ -617,15 +738,15 @@
                     <h3 class="barriers-title">Patient Access Barriers</h3>
                     <div class="barriers-grid">
                         <div class="barrier-card">
-                            <div class="barrier-type">Clinical Prerequisites</div>
+                            <div class="barrier-type"><strong>Clinical Prerequisites</strong></div>
                             <div class="barrier-description">Documentation of specific biomarker testing required.</div>
                         </div>
                         <div class="barrier-card">
-                            <div class="barrier-type">Coverage Limitations</div>
+                            <div class="barrier-type"><strong>Coverage Limitations</strong></div>
                             <div class="barrier-description">Limited to FDA-approved indications only; off-label use not covered.</div>
                         </div>
                         <div class="barrier-card">
-                            <div class="barrier-type">Financial Requirements</div>
+                            <div class="barrier-type"><strong>Financial Requirements</strong></div>
                             <div class="barrier-description">High specialty tier copay; prior authorization required for copay assistance.</div>
                         </div>
                     </div>
@@ -633,8 +754,42 @@
             </div>
         </div>
     </div>
+    </div>
 
     <script>
+        function filterByTier(button, tier) {
+            // Toggle active state of tier button
+            const tierButtons = document.querySelectorAll('[data-tier]');
+            tierButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            // Filter table rows
+            const rows = document.querySelectorAll('tr[data-tier]');
+            rows.forEach(row => {
+                if (row.getAttribute('data-tier') == tier) {
+                    row.classList.remove('hidden-row');
+                } else {
+                    row.classList.add('hidden-row');
+                }
+            });
+        }
+
+        function filterByDosage(button, dosage) {
+            // Toggle active state of dosage button
+            const dosageButtons = document.querySelectorAll('[data-dosage]');
+            dosageButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+
+            // Filter table rows
+            const rows = document.querySelectorAll('tr[data-dosage]');
+            rows.forEach(row => {
+                if (row.getAttribute('data-dosage') === dosage) {
+                    row.classList.remove('hidden-row');
+                } else {
+                    row.classList.add('hidden-row');
+                }
+            });
+        }
         function toggleDetails(button) {
             const card = button.closest('.competitor-card');
             const expandedContent = card.querySelector('.expanded-content');
@@ -656,6 +811,19 @@
             if (!isExpanded) {
                 expandedRow.classList.add('active');
             }
+        }
+        function showAnalysis(button) {
+            // Remove active class from all buttons
+            document.querySelectorAll('.state-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add active class to clicked button
+            button.classList.add('active');
+            
+            // Show the drug analysis content
+            const analysisContent = document.getElementById('drugAnalysisContent');
+            analysisContent.classList.add('active');
         }
     </script>
 </body>
