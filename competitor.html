@@ -599,7 +599,18 @@
                 <div class="company-drug-info">
                     <div class="competitor-name">Merck & Co</div>
                     <div class="drug-name">Keytruda (pembrolizumab)</div>
-                    <strong>Standard Tiers</strong> Tier-1,Tier-3
+                    <div class="filter-buttons">
+                        <div class="tier-filters">
+                            <strong>Tiers: </strong>
+                            <button class="filter-btn" data-tier="1" onclick="filterByTier(this, 1)">Tier 1</button>
+                            <button class="filter-btn" data-tier="2" onclick="filterByTier(this, 2)">Tier 2</button>
+                        </div>
+                        <div class="dosage-filters">
+                            <strong>Dosage: </strong>
+                            <button class="filter-btn" data-dosage="840mg" onclick="filterByDosage(this, '840mg')">840mg</button>
+                            <button class="filter-btn" data-dosage="1200mg" onclick="filterByDosage(this, '1200mg')">1200mg</button>
+                        </div>
+                    </div>
                 </div>
                 <button class="view-details-btn" onclick="toggleDetails(this)">View Details</button>
             </div>
@@ -609,6 +620,7 @@
                         <tr>
                             <th>Plan Type</th>
                             <th>Payers</th>
+                            <th>Dosage</th>
                             <th>AVG POP (%)</th>
                             <th>AVG Reimbursement (%)</th>
                             <th>Tier Status</th>
@@ -621,6 +633,7 @@
                                 <button class="payer-btn" onclick="togglePayerDetails(this, 'cigna-hmo')">Cigna</button><br>
                                 <button class="payer-btn" onclick="togglePayerDetails(this, 'uhc-hmo')">United Healthcare</button>
                             </td>
+                            <td>150</td>
                             <td>15%</td>
                             <td>85%</td>
                             <td><span class="status-badge status-approved">Tier 1</span></td>
@@ -694,6 +707,7 @@
                             <td>
                                 <button class="payer-btn" onclick="togglePayerDetails(this, 'bcbs-ppo')">Blue Cross</button>
                             </td>
+                            <td>150</td>
                             <td>22%</td>
                             <td>78%</td>
                             <td><span class="status-badge status-restricted">Tier 3</span></td>
